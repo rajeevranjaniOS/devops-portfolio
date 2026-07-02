@@ -1,8 +1,9 @@
-version: "3.9"
-
 services:
+
   portfolio:
+
     image: devops-portfolio:v1
+
     container_name: devops-portfolio-container
 
     build:
@@ -20,3 +21,15 @@ services:
       timeout: 3s
       retries: 3
       start_period: 10s
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    networks:
+      - portfolio-network
+
+networks:
+  portfolio-network:
