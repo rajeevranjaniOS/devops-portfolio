@@ -56,30 +56,18 @@ jobs:
       #########################################################
 
       - name: Sync Website to S3
-
-        run: |
-
-          aws s3 sync . s3://${{ secrets.S3_BUCKET_NAME }} \
-            --delete \
-            --exclude "*" \
-            --include "index.html" \
-            --include "css/*" \
-            --include "js/*" \
-            --include "images/*" \
-            --include "docs/*"
-            --exclude ".git/*"
+        run: aws s3 sync . s3://${{ secrets.S3_BUCKET_NAME }} --delete --exclude "*" --include "index.html" --include "css/*" --include "js/*" --include "images/*" --include "docs/*"
 
       #########################################################
       # Invalidate CloudFront Cache
       #########################################################
 
-      - name: Invalidate CloudFront
-
+      - name: Invalidate CloudFront Cache
         run: |
-
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
+
       #########################################################
       # Deployment Completed
       #########################################################
