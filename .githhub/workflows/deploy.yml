@@ -1,0 +1,18 @@
+###############################################################
+# GitHub Actions CI/CD Pipeline
+# DevOps Portfolio Website
+###############################################################
+
+name: DevOps Portfolio CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
