@@ -16,3 +16,13 @@ jobs:
   build:
     name: Build Docker Image
     runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Display Repository Contents
+        run: |
+          pwd
+          ls -la
