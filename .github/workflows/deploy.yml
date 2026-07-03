@@ -76,3 +76,44 @@ jobs:
             pwd
 
             docker --version
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    needs: test-ssh
+
+    steps:
+      - name: Deploy Portfolio to EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "======================================"
+            echo "Starting Deployment..."
+            echo "======================================"
+
+            docker pull raranjan1711/devops-portfolio:latest
+
+            docker stop portfolio || true
+
+            docker rm portfolio || true
+
+            docker run -d \
+              --name portfolio \
+              --restart unless-stopped \
+              -p 80:80 \
+              raranjan1711/devops-portfolio:latest
+
+            echo "======================================"
+            echo "Deployment Completed"
+            echo "======================================"
+            docker ps
+
+            sleep 5
+
+            curl -I http://localhost
+
+            echo "======================================"
+            echo "Deployment Completed Successfully"
+            echo "======================================"
