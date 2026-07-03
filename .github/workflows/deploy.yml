@@ -4,7 +4,8 @@
 ###############################################################
 
 name: DevOps Portfolio CI/CD Pipeline
-
+permissions:
+  contents: read
 on:
   push:
     branches:
@@ -43,19 +44,35 @@ jobs:
 
       - name: Verify Docker Login
         run: |
-          echo "Successfully authenticated with Docker Hub."
-      - name: Build Docker Image
+         docker info
+         echo "Docker login successful."
+      - name: Build and Push Docker Image
         uses: docker/build-push-action@v6
         with:
-          context: .
-          push: false
-          tags: raranjan1711/devops-portfolio:latest
+         context: .
+         push: true
+         tags: |
+          raranjan1711/devops-portfolio:latest
+          raranjan1711/devops-portfolio:${{ github.sha }}
+  test-ssh:
+    name: Test SSH Connection
+    runs-on: ubuntu-latest
+    needs: build
 
-      - name: Push Docker Image to Docker Hub
-        uses: docker/build-push-action@v6
+    steps:
+      - name: Execute SSH Command
+        uses: appleboy/ssh-action@v1.2.0
         with:
-          context: .
-          push: true
-          tags: |
-            raranjan1711/devops-portfolio:latest
-            raranjan1711/devops-portfolio:${{ github.sha }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "================================"
+            echo "Connected to EC2 Successfully"
+            echo "================================"
+
+            hostname
+            whoami
+            pwd
+
+            docker --version
