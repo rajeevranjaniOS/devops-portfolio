@@ -56,3 +56,10 @@ terraform.tfvars
 # Windows
 # =========================
 ehthumbs.db
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+.terraform.lock.hcl
