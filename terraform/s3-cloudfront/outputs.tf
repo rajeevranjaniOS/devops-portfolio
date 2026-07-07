@@ -17,3 +17,30 @@ output "cloudfront_domain_name" {
   value = module.cloudfront.cloudfront_domain_name
 
 }
+###############################################################
+# CloudWatch Outputs
+###############################################################
+
+output "dashboard_name" {
+
+  value = module.cloudwatch.dashboard_name
+
+}
+
+output "alarm_4xx_name" {
+
+  value = module.cloudwatch.alarm_4xx_name
+
+}
+
+output "alarm_5xx_name" {
+
+  value = module.cloudwatch.alarm_5xx_name
+
+}
+output "distribution_id" {
+
+  description = "CloudFront Distribution ID"
+
+  value = module.cloudfront.distribution_id
+}

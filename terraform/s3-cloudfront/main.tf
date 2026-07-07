@@ -31,3 +31,49 @@ module "cloudfront" {
   bucket_regional_domain_name = module.s3.bucket_regional_domain_name
 
 }
+###############################################################
+# SNS Module
+###############################################################
+
+module "sns" {
+
+  source = "../modules/sns"
+
+  providers = {
+
+    aws = aws.use1
+
+  }
+
+  topic_name = local.sns_topic_name
+
+  email_endpoint = var.alert_email
+
+  common_tags = local.common_tags
+
+}
+###############################################################
+# CloudWatch Module
+###############################################################
+
+module "cloudwatch" {
+
+  source = "../modules/cloudwatch"
+
+  providers = {
+
+    aws = aws.use1
+
+  }
+
+  dashboard_name = local.dashboard_name
+
+  distribution_id = module.cloudfront.distribution_id
+
+  sns_topic_arn = module.sns.topic_arn
+
+  alarm_4xx_name = local.alarm_4xx_name
+
+  alarm_5xx_name = local.alarm_5xx_name
+
+}

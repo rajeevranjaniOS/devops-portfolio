@@ -21,3 +21,10 @@ variable "bucket_name" {
   description = "rajeevranjan-devops-portfolio-2026"
   type        = string
 }
+variable "alert_email" {
+
+  description = "Email address for SNS notifications"
+
+  type = string
+
+}

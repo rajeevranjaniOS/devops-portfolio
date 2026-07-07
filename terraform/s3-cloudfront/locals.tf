@@ -15,5 +15,12 @@ locals {
     Owner = "Rajeev Ranjan"
 
   }
+  sns_topic_name = "${var.project_name}-${var.environment}-alerts"
+
+  dashboard_name = "${var.project_name}-dashboard"
+
+  alarm_4xx_name = "${var.project_name}-${var.environment}-4xx-alarm"
+
+  alarm_5xx_name = "${var.project_name}-${var.environment}-5xx-alarm"
 
 }
