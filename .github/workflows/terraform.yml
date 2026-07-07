@@ -1,0 +1,175 @@
+###############################################################
+# Terraform CI Pipeline
+###############################################################
+
+name: Terraform CI
+
+on:
+
+  push:
+
+    branches:
+      - main
+
+    paths:
+      - "terraform/**"
+
+  pull_request:
+
+    paths:
+      - "terraform/**"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+
+  terraform:
+
+    name: Terraform Validation
+
+    runs-on: ubuntu-latest
+
+    defaults:
+
+      run:
+
+        working-directory: terraform/s3-cloudfront
+
+    steps:
+
+      #########################################################
+      # Checkout Repository
+      #########################################################
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      
+      #########################################################
+      # Cache Terraform Providers
+      #########################################################
+
+      - name: Cache Terraform Plugins
+        uses: actions/cache@v4
+
+        with:
+         path: |
+          ~/.terraform.d/plugin-cache
+         key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
+         restore-keys: |
+          ${{ runner.os }}-terraform-
+
+      #########################################################
+      # Configure AWS Credentials
+      #########################################################
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      #########################################################
+      # Setup Terraform
+      #########################################################
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.13.0
+
+      #########################################################
+      # Terraform Version
+      #########################################################
+
+      - name: Terraform Version
+        run: terraform version
+
+      #########################################################
+      # Terraform Init
+      #########################################################
+
+      - name: Terraform Init
+        run: terraform init
+
+      #########################################################
+      # Terraform Format Check
+      #########################################################
+
+      - name: Terraform Format
+        run: terraform fmt -check -recursive
+
+      #########################################################
+      # Terraform Validate
+      #########################################################
+
+      - name: Terraform Validate
+        run: terraform validate
+
+        #########################################################
+        # Setup TFLint
+        #########################################################
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+
+       #########################################################
+       # TFLint Version
+       #########################################################
+
+      - name: TFLint Version
+        run: tflint --version
+
+      #########################################################
+      # Run TFLint
+      #########################################################
+
+      - name: Run TFLint
+        run: tflint
+
+      #########################################################
+      # Terraform Plan
+      #########################################################
+
+      #########################################################
+      # tfsec Security Scan
+      #########################################################
+
+      - name: Run tfsec
+        uses: aquasecurity/tfsec-action@v1.0.3
+
+        with:
+         working_directory: terraform/s3-cloudfront
+
+      - name: Terraform Plan
+        run: terraform plan -no-color -out=tfplan
+
+        #########################################################
+        # Checkov Security Scan
+        #########################################################
+
+      - name: Run Checkov
+
+        uses: bridgecrewio/checkov-action@master
+
+        with:
+
+         directory: terraform/s3-cloudfront
+
+         framework: terraform
+
+      #########################################################
+      # Upload Plan
+      #########################################################
+
+      - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: terraform-plan
+          path: terraform/s3-cloudfront/tfplan
