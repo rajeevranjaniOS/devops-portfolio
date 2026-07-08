@@ -12,6 +12,20 @@ module "s3" {
 
 }
 
+module "iam" {
+
+  source = "../modules/iam"
+
+  role_name = local.ec2_role_name
+
+  policy_name = local.policy_name
+
+  bucket_arn = module.s3.bucket_arn
+
+  common_tags = local.common_tags
+
+}
+
 ###############################################################
 # WAF Module
 ###############################################################

@@ -25,4 +25,8 @@ locals {
 
   web_acl_name = "${var.project_name}-${var.environment}-web-acl"
 
+  ec2_role_name = "${var.project_name}-${var.environment}-ec2-role"
+
+  policy_name = "${var.project_name}-${var.environment}-s3-readonly-policy"
+
 }
