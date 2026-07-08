@@ -23,4 +23,6 @@ locals {
 
   alarm_5xx_name = "${var.project_name}-${var.environment}-5xx-alarm"
 
+  web_acl_name = "${var.project_name}-${var.environment}-web-acl"
+
 }

@@ -41,3 +41,17 @@ variable "bucket_regional_domain_name" {
   type = string
 
 }
+
+###############################################################
+# WAF Web ACL ARN
+###############################################################
+
+variable "web_acl_arn" {
+
+  description = "AWS WAF Web ACL ARN"
+
+  type = string
+
+  default = null
+
+}

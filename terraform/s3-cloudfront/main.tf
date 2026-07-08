@@ -13,6 +13,28 @@ module "s3" {
 }
 
 ###############################################################
+# WAF Module
+###############################################################
+
+module "waf" {
+
+  source = "../modules/waf"
+
+  providers = {
+
+    aws = aws.use1
+
+  }
+
+  web_acl_name = local.web_acl_name
+
+
+  common_tags = local.common_tags
+
+}
+
+
+###############################################################
 # CloudFront Module
 ###############################################################
 
@@ -29,6 +51,8 @@ module "cloudfront" {
   bucket_arn = module.s3.bucket_arn
 
   bucket_regional_domain_name = module.s3.bucket_regional_domain_name
+
+  web_acl_arn = module.waf.web_acl_arn
 
 }
 ###############################################################

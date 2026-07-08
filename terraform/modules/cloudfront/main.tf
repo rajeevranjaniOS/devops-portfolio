@@ -28,6 +28,8 @@ resource "aws_cloudfront_distribution" "portfolio_distribution" {
 
   default_root_object = "index.html"
 
+  web_acl_id = var.web_acl_arn
+
   # Cost Optimization
   price_class = "PriceClass_200"
 

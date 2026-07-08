@@ -17,3 +17,10 @@ output "distribution_id" {
   value = aws_cloudfront_distribution.portfolio_distribution.id
 
 }
+output "distribution_arn" {
+
+  description = "CloudFront Distribution ARN"
+
+  value = aws_cloudfront_distribution.portfolio_distribution.arn
+
+}
