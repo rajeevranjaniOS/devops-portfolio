@@ -6,6 +6,8 @@ resource "aws_sns_topic" "portfolio_alerts" {
 
   name = var.topic_name
 
+  kms_master_key_id = "alias/aws/sns"
+
   tags = var.common_tags
 
 }
